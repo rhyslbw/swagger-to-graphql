@@ -1,8 +1,21 @@
 import type {GraphQLOutputType, GraphQLInputType, GraphQLObjectType} from 'graphql/type/definition.js.flow';
 
+//import type { NetConnectOpts } from 'net';
+
 export type SwaggerToGraphQLOptions = {
   GQLProxyBaseUrl: string,
   BearerToken?: string
+}
+export type BuildOptions = {
+  customHeaders?: {[string]: string},
+  agentOptions?: AgentOptions
+}
+
+// Todo: Switch to NetConnectOpts
+export type AgentOptions = {
+  ca: Uint8Array,
+  key: Uint8Array,
+  cert: Uint8Array
 }
 
 type Param = {
