@@ -113,14 +113,14 @@ export const getTypeFields = (jsonSchema: JSONSchemaType, title: string, isInput
     };
   }
   return () =>
-    _.mapValues(jsonSchema.properties || {}, (propertySchema, propertyName) => {
+    _.mapKeys(_.mapValues(jsonSchema.properties || {}, (propertySchema, propertyName) => {
       const baseType = jsonSchemaTypeToGraphQL(title, propertySchema, propertyName, isInputType, gqlTypes);
       const type = jsonSchema.required && jsonSchema.required.includes(propertyName) && !isObjectType(jsonSchema.properties[propertyName]) ? graphql.GraphQLNonNull(baseType) : baseType;
       return {
         description: propertySchema.description,
         type
       };
-    });
+    }), (value, key) => key.replace(/^[0-9]/, '_'));
 };
 
 const jsonSchemaTypeToGraphQL = (title: string, jsonSchema: JSONSchemaType, schemaName: string, isInputType: boolean, gqlTypes: GraphQLTypeMap) => {
