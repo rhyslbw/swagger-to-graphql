@@ -37,7 +37,7 @@ const resolver = (endpoint: Endpoint, proxyUrl: ?(Function | string), options = 
   async (_, args: GraphQLParameters, opts: SwaggerToGraphQLOptions) => {
     const proxy = !proxyUrl ? opts.GQLProxyBaseUrl : (typeof proxyUrl === 'function' ? proxyUrl(opts) : proxyUrl);
     const req = endpoint.request(args, proxy);
-    if (opts.headers) {
+    if (opts && opts.headers) {
       const { host, ...otherHeaders } = opts.headers;
       req.headers = Object.assign(options.customHeaders || {}, req.headers, otherHeaders);
     }
