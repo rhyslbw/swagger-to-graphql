@@ -21,9 +21,11 @@ const getTypeNameFromRef = (ref: string) => {
   return cutRef.replace(/\//, '_');
 };
 
+const sanitizeGraphQLTypeName = (typeName) => typeName.replace(/-/g, '');
+
 const getExistingType = (ref: string, isInputType: boolean, gqlTypes: GraphQLTypeMap) => {
   const refTypeName = getTypeNameFromRef(ref);
-  let typeName = refTypeName;
+  let typeName = sanitizeGraphQLTypeName(refTypeName);
   if (isInputType && !typeName.endsWith('Input')) {
     typeName = typeName + 'Input';
   }
