@@ -16,14 +16,22 @@ const express = require('express');
 const app = express();
 const graphqlHTTP = require('express-graphql');
 const graphQLSchema = require('swagger-to-graphql');
+const fs = require('fs');
 
 const proxyUrl = 'http://petstore.swagger.io/v2';
 const pathToSwaggerSchema = './petstore.json';
-const customHeaders = {
+const options = {
+  customHeaders: {
   // Authorization: 'Basic YWRkOmJhc2ljQXV0aA=='
+  }
+  agentOptions: {
+    ca: fs.readFileSync('ca.crt'),
+    key: fs.readFileSync('client.key'),
+    cert: fs.readFileSync('cert.pem')
+  }
 }
 
-graphQLSchema(pathToSwaggerSchema, proxyUrl, customHeaders).then(schema => {
+graphQLSchema(pathToSwaggerSchema, proxyUrl, options).then(schema => {
   app.use('/graphql', graphqlHTTP(() => {
     return {
       schema,
@@ -42,7 +50,9 @@ graphQLSchema(pathToSwaggerSchema, proxyUrl, customHeaders).then(schema => {
 Constructor (graphQLSchema) arguments:
 * `pathToSwaggerSchema` (string) is a path to your local swagger schema file. *required*
 * `proxyUrl` (string) base URL which will be used to hit your HTTP API. Can be taken either from Swagger schema `baseUrl` configuration or from this parameter.
-* `customHeaders` (object) key value object of custom headers, which should be included to the HTTP request. Can be used for example for authorization (look at the example above)
+* `options` (object)
+  - `customHeaders` (object) key value object of custom headers, which should be included to the HTTP request. Can be used for example for authorization (look at the example above)
+  - `agentOptions` (object) Currently limited to support client certificate authentication.
 
 ## CLI usage
 
@@ -53,5 +63,5 @@ npm i -g swagger-to-graphql
 swagger-to-graphql --swagger=/path/to/swagger_schema.json > ./types.graphql
 ```
 
-
 ![Build Status](https://travis-ci.org/yarax/swagger-to-graphql.svg?branch=master)
+
