@@ -30,14 +30,12 @@ const getExistingType = (ref: string, isInputType: boolean, gqlTypes: GraphQLTyp
     typeName = typeName + 'Input';
   }
   const allSchema = getSchema();
-  if (!gqlTypes[typeName]) {
-    const schema = allSchema.definitions[refTypeName];
-    if (!schema) {
-      throw new Error(`Definition ${refTypeName} was not found in schema`);
-    }
-    return createGQLObject(schema, refTypeName, isInputType, gqlTypes);
+  if (gqlTypes[typeName]) return gqlTypes[typeName];
+  const schema = allSchema.definitions[refTypeName];
+  if (!schema) {
+    throw new Error(`Definition ${refTypeName} was not found in schema`);
   }
-  return gqlTypes[typeName];
+  return createGQLObject(schema, typeName, isInputType, gqlTypes);
 };
 
 const getRefProp = (jsonSchema: JSONSchemaType) => {
